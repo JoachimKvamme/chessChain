@@ -50,6 +50,8 @@ var state : bool = false
 var moves = []
 var selected_piece : Vector2
 
+var promotion_square = null
+
 
 
 
@@ -85,6 +87,10 @@ func is_mouse_out():
 	return false
 	
 func display_board():
+	
+	for child in pieces.get_children():
+		child.queue_free()
+	
 	for i in BOARD_SIZE:
 		for j in BOARD_SIZE:
 			var holder = TEXTURE_HOLDER.instantiate()
@@ -105,6 +111,9 @@ func display_board():
 				3: holder.texture = WHITE_BISHOP
 				2: holder.texture = WHITE_KNIGHT
 				1: holder.texture = WHITE_PAWN
+				
+	if white: turn.texture = TURN_WHITE
+	else: turn.texture = TURN_BLACK
 
 func show_options():
 	moves = get_moves()
@@ -118,13 +127,28 @@ func show_dots():
 		var holder = TEXTURE_HOLDER.instantiate()
 		dots.add_child(holder)
 		holder.texture = PIECE_MOVE
-		holder.global_position = Vector2(i.y * CELL_WIDHT  + (CELL_WIDHT / 2), -i.x * CELL_WIDHT - (CELL_WIDHT / 2))	
+		holder.global_position = Vector2(i.y * CELL_WIDHT  + (CELL_WIDHT / 2), -i.x * CELL_WIDHT - (CELL_WIDHT / 2))
+		
+func delete_dots():
+	for child in dots.get_children():
+		child.queue_free()
 
 func set_moves(var2, var1):
 	for i in moves:
-		if i.x == var2 && i.y == var1: 
+		if i.x == var2 && i.y == var1:
+			match board[selected_piece.x][selected_piece.y]:
+				1: 
+					if i.x == 7: promote(i)
+				-1:
+					if i.x == 0: promote(i)
+				
 			board[var2][var1] = board[selected_piece.x][selected_piece.y]
-	
+			board[selected_piece.x][selected_piece.y] = 0
+			white = !white
+			display_board()
+			break
+	delete_dots()
+	state = false
 
 
 func get_moves():
@@ -256,3 +280,8 @@ func is_empty(pos : Vector2):
 func is_enemy(pos : Vector2):
 	if white && board[pos.x][pos.y] < 0 || !white && board[pos.x][pos.y] > 0: return true
 	return false
+
+func promote( _var : vector2):
+	promotion_square = _var
+	
+	
