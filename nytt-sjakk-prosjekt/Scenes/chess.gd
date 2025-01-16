@@ -61,6 +61,9 @@ var white_rook_right = false
 var black_rook_left = false
 var black_rook_right = false
 
+var en_passant = null
+
+
 
 
 
@@ -153,13 +156,30 @@ func delete_dots():
 		child.queue_free()
 
 func set_moves(var2, var1):
+	
+	var just_now = false
+	
 	for i in moves:
 		if i.x == var2 && i.y == var1:
 			match board[selected_piece.x][selected_piece.y]:
 				1: 
 					if i.x == 7: promote(i)
+					if i.x == 3 && selected_piece.x == 1:
+						en_passant = i
+						just_now = true
+					elif en_passant != null:
+						if en_passant.y == i.y && selected_piece.y != i.y && en_passant.x == selected_piece.x:
+							board[en_passant.x][en_passant.y] = 0
+						
+					
 				-1:
 					if i.x == 0: promote(i)
+					if i.x == 4 && selected_piece.x == 6:
+						en_passant = i
+						just_now = true
+					elif en_passant != null:
+						if en_passant.y == i.y && selected_piece.y != i.y && en_passant.x == selected_piece.x:
+							board[en_passant.x][en_passant.y] = 0
 				4:
 					if selected_piece.x == 0 && selected_piece.y == 0: white_rook_left = true
 					elif selected_piece.x == 0 && selected_piece.y == 7: white_rook_right = true
@@ -196,7 +216,7 @@ func set_moves(var2, var1):
 							board[7][7] = 0
 							board[7][5] = -4
 					
-				
+			if !just_now: en_passant = null
 			board[var2][var1] = board[selected_piece.x][selected_piece.y]
 			board[selected_piece.x][selected_piece.y] = 0
 			white = !white
@@ -321,6 +341,9 @@ func get_pawn_moves():
 	
 	if white && selected_piece.x == 1 || !white && selected_piece.x == 6: is_first_move = true
 	
+	if en_passant != null && (white && selected_piece.x == 4 || !white && selected_piece.x == 3) && abs(en_passant.y - selected_piece.y) == 1:
+		_moves.append(en_passant + direction)
+	
 	var pos = selected_piece + direction 
 	if is_empty(pos): _moves.append(pos)
 	
@@ -362,3 +385,4 @@ func _on_button_pressed(button):
 	black_pieces.visible = false
 	promotion_square = null
 	display_board()
+	
