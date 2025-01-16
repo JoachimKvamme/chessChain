@@ -1,1 +1,1 @@
-Planen er å lage en sjakk-applikasjon med støtte for multiplayer over et peer-to-peer-nettverk. Ideen er å også inkludere et ELO-system i block-chain, altså et ratingsystem som fungerer uten en sentral server (p2p-spilling *og* p2p-rating). 
+Planen er å lage en sjakk-applikasjon med støtte for multiplayer over et peer-to-peer-nettverk. Ideen er å også inkludere et ELO-system i block-chain -- et ratingsystem som fungerer uten en sentral server. Altså: p2p-spilling *og* p2p-rating. 
