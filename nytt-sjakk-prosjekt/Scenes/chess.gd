@@ -1,28 +1,51 @@
 extends Sprite2D
 
 const BOARD_SIZE = 8
-const CELL_WIDHT = 18
+const CELL_WIDHT = 50
 
 const TEXTURE_HOLDER = preload("res://Scenes/texture_holder.tscn")
+#
+#const BLACK_BISHOP = preload("res://Assets/Chess/black_bishop.png")
+#const BLACK_KING = preload("res://Assets/Chess/black_king.png")
 
-const BLACK_BISHOP = preload("res://Assets/Chess/black_bishop.png")
-const BLACK_KING = preload("res://Assets/Chess/black_king.png")
-
-const BLACK_KNIGHT = preload("res://Assets/Chess/black_knight.png")
-const BLACK_PAWN = preload("res://Assets/Chess/black_pawn.png")
-const BLACK_QUEEN = preload("res://Assets/Chess/black_queen.png")
-const BLACK_ROOK = preload("res://Assets/Chess/black_rook.png")
-const WHITE_BISHOP = preload("res://Assets/Chess/white_bishop.png")
-const WHITE_KING = preload("res://Assets/Chess/white_king.png")
-const WHITE_KNIGHT = preload("res://Assets/Chess/white_knight.png")
-const WHITE_PAWN = preload("res://Assets/Chess/white_pawn.png")
-const WHITE_QUEEN = preload("res://Assets/Chess/white_queen.png")
-const WHITE_ROOK = preload("res://Assets/Chess/white_rook.png")
+#const BLACK_KNIGHT = preload("res://Assets/Chess/black_knight.png")
+#const BLACK_PAWN = preload("res://Assets/Chess/black_pawn.png")
+#const BLACK_QUEEN = preload("res://Assets/Chess/black_queen.png")
+#const BLACK_ROOK = preload("res://Assets/Chess/black_rook.png")
+#const WHITE_BISHOP = preload("res://Assets/Chess/white_bishop.png")
+#const WHITE_KING = preload("res://Assets/Chess/white_king.png")
+#const WHITE_KNIGHT = preload("res://Assets/Chess/white_knight.png")
+#const WHITE_PAWN = preload("res://Assets/Chess/white_pawn.png")
+#const WHITE_QUEEN = preload("res://Assets/Chess/white_queen.png")
+#const WHITE_ROOK = preload("res://Assets/Chess/white_rook.png")
+#
 
 const PIECE_MOVE = preload("res://Assets/Chess/Piece_move.png")
 
 const TURN_WHITE = preload("res://Assets/Chess/turn-white.png")
 const TURN_BLACK = preload("res://Assets/Chess/turn-black.png")
+
+const BLACK_BISHOP = preload("res://Assets/ChessOriginal/bishop-black-outlined.png")
+const WHITE_BISHOP = preload("res://Assets/ChessOriginal/bishop-white-outlined.png")
+
+const BLACK_KING = preload("res://Assets/ChessOriginal/king-black-outlined.png")
+const WHITE_KING = preload("res://Assets/ChessOriginal/king-white-outlined.png")
+
+const BLACK_KNIGHT = preload("res://Assets/ChessOriginal/knight-black-outlined.png")
+const WHITE_KNIGHT = preload("res://Assets/ChessOriginal/knight-white-outlined.png")
+
+const BLACK_PAWN = preload("res://Assets/ChessOriginal/pawn-black-outlined.png")
+const WHITE_PAWN = preload("res://Assets/ChessOriginal/pawn-white-outlined.png")
+
+const BLACK_QUEEN = preload("res://Assets/ChessOriginal/queen-black-outlined.png")
+const WHITE_QUEEN = preload("res://Assets/ChessOriginal/queen-white-outlined.png")
+
+const BLACK_ROOK = preload("res://Assets/ChessOriginal/rook-black-outlined.png")
+const WHITE_ROOK = preload("res://Assets/ChessOriginal/rook-white-outlined.png")
+
+const TILE_MARKING_BLACK_PERSPECTIVE = preload("res://Assets/ChessOriginal/tile_marking_black_perspective.png")
+const TILE_MARKING_WHITE_PERSPECTIVE = preload("res://Assets/ChessOriginal/tile_marking_white_perspective.png")
+
 
 @onready var pieces: Node2D = $pieces
 @onready var dots: Node2D = $dots
