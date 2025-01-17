@@ -66,6 +66,9 @@ var en_passant = null
 var white_king_pos = Vector2(0, 4)
 var black_king_pos = Vector2(7, 4)
 
+var fifty_move_rule = 0
+
+
 
 
 
@@ -108,8 +111,9 @@ func _input(event):
 				set_moves(var2, var1)
 			
 func is_mouse_out():
-	if get_global_mouse_position().x < 0 || get_global_mouse_position().x > 144 || get_global_mouse_position().y > 0 || get_global_mouse_position().y < -144: return true
-	return false
+	#if get_global_mouse_position().x < 0 || get_global_mouse_position().x > 144 || get_global_mouse_position().y > 0 || get_global_mouse_position().y < -144: return true
+	if get_rect().has_point(to_local(get_global_mouse_position())): return false
+	return true
 	
 func display_board():
 	
@@ -164,8 +168,12 @@ func set_moves(var2, var1):
 	
 	for i in moves:
 		if i.x == var2 && i.y == var1:
+			fifty_move_rule += 1
+			if is_enemy(Vector2(var2, var1)):
+				fifty_move_rule = 0
 			match board[selected_piece.x][selected_piece.y]:
 				1: 
+					fifty_move_rule = 0
 					if i.x == 7: promote(i)
 					if i.x == 3 && selected_piece.x == 1:
 						en_passant = i
@@ -176,6 +184,7 @@ func set_moves(var2, var1):
 						
 					
 				-1:
+					fifty_move_rule = 0
 					if i.x == 0: promote(i)
 					if i.x == 4 && selected_piece.x == 6:
 						en_passant = i
@@ -227,7 +236,19 @@ func set_moves(var2, var1):
 			break
 	delete_dots()
 	state = false
-
+	
+	if (selected_piece != var2 || selected_piece != var1) && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
+		selected_piece = Vector2(var2, var1)
+		show_options()
+		state = true 
+	
+	elif is_stalemate():
+		if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos): print("Checkmate!")
+		else: print("Stalemate!")
+		
+	if fifty_move_rule == 50: print("Draw!")
+	elif insufficient_material(): print("Draw!")
+			
 
 func get_moves(selected : Vector2):
 	var _moves = []
@@ -513,4 +534,37 @@ func is_in_check(king_pos : Vector2):
 	
 	return false
 				
+	
+func is_stalemate():
+	if white:
+		for i in BOARD_SIZE:
+			for j in BOARD_SIZE:
+				if board[i][j] > 0:
+					if get_moves(Vector2(i, j)) != []: return false
+	else:
+		for i in BOARD_SIZE:
+			for j in BOARD_SIZE:
+				if board[i][j] < 0:
+					if get_moves(Vector2(i, j)) != []: return false
+	return true
+
+func insufficient_material():
+	var white_piece = 0
+	var black_piece = 0
+	
+	for i in BOARD_SIZE:
+		for j in BOARD_SIZE:
+			match board[i][j]:
+				2, 3: 
+					if white_piece == 0: white_piece += 1
+					else: return false
+				-2, -3:
+					if black_piece == 0: black_piece += 1
+					else: return false
+				6, -6, 0: pass
+				_:
+					return false
 				
+	return true
+	
+	
