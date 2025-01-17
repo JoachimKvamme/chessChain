@@ -33,6 +33,16 @@ public partial class P2p : Node
 		byte[] buffer = new byte[256];
 		string receivedMessage; // TODO: Endre til noe mer fornuftig, so f.eks. "opponentsMove";
 		
+		using tcpClient client = _tcpListener.AcceptTcpClient();
+		
+		var tcpStream = client.GetStream();
+		
+		int readTotal;
+		
+		while(readTotal = topStream.Read(buffer, 0, buffer.Length) != 0)
+		{
+			string incomingMessage = UTF8.GetString(buffer, 0, buffer.length);
+		}
 		//adding parsed data loop in the future here.
 	}
 }
