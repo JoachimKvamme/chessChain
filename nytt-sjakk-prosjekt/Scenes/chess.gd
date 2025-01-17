@@ -68,6 +68,8 @@ var black_king_pos = Vector2(7, 4)
 
 var fifty_move_rule = 0
 
+var unique_board_moves : Array = []
+var amount_of_same : Array = []
 
 
 
@@ -232,12 +234,13 @@ func set_moves(var2, var1):
 			board[var2][var1] = board[selected_piece.x][selected_piece.y]
 			board[selected_piece.x][selected_piece.y] = 0
 			white = !white
+			threefold_repetition(board)
 			display_board()
 			break
 	delete_dots()
 	state = false
 	
-	if (selected_piece != var2 || selected_piece != var1) && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
+	if (selected_piece.x != var2 || selected_piece.y != var1) && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
 		selected_piece = Vector2(var2, var1)
 		show_options()
 		state = true 
@@ -567,4 +570,11 @@ func insufficient_material():
 				
 	return true
 	
-	
+func threefold_repetition(var1 : Array):
+	for i in unique_board_moves.size():
+		if var1 == unique_board_moves[i]:
+			amount_of_same[i] += 1
+			if amount_of_same[i] >= 3: print("Draw!")
+			return
+	unique_board_moves.append(var1.duplicate(true))
+	amount_of_same.append(1)
