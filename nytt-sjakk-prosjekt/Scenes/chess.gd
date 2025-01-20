@@ -94,6 +94,8 @@ var fifty_move_rule = 0
 var unique_board_moves : Array = []
 var amount_of_same : Array = []
 
+var move_number = 0
+
 
 
 
@@ -155,6 +157,7 @@ func _input(event):
 				show_options()
 				state = true
 			elif state:
+				record_move(var2, var1)
 				set_moves(var2, var1)
 			
 func is_mouse_out():
@@ -283,6 +286,7 @@ func set_moves(var2, var1):
 			display_board()
 			break
 	delete_dots()
+	
 	state = false
 	
 	if (selected_piece.x != var2 || selected_piece.y != var1) && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
@@ -623,3 +627,48 @@ func threefold_repetition(var1 : Array):
 			return
 	unique_board_moves.append(var1.duplicate(true))
 	amount_of_same.append(1)
+	
+func record_move(var2, var1):
+	
+	var line
+	var row
+	match var2:
+		0:
+			line = 1
+		1:
+			line = 2
+		2:
+			line = 3
+		3:
+			line = 4
+		4:
+			line = 5
+		5:
+			line = 6
+		6:
+			line = 7
+		7:
+			line = 8
+	match var1:
+		0:
+			row = "a"
+		1:
+			row = "b"
+		2:
+			row = "c"
+		3:
+			row = "d"
+		4:
+			row = "e"
+		5:
+			row = "f"
+		6:
+			row = "g"
+		7:
+			row = "h"
+	move_number = int(move_number)
+	move_number += 1
+	move_number = str(move_number)
+	line = str(line)
+	print(move_number + "." + " " + row + "." + " " + line)
+	
