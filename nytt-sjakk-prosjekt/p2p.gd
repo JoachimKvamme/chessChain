@@ -1,11 +1,21 @@
 extends Node
 
+var multiplayer_peer = ENetMultiplayerPeer.new()
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
+const PORT = 19293 # set up a way to add port manually
+const ADRESS = "0.0.0.0" # set up a way to add IP adress manually
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func _on_host_pressed(): # function for when the player press the host button
+	$NetworkInfo/NetworkSideDisplay.text = "Server"
+	$Menu.visible = false # removes menu from sight
+	multiplayer_peer.create_server(PORT) # possibly add input directly here?
+	multiplayer.multiplayer_peer = multiplayer_peer
+	$NetworkInfo/UniquePeerID.text = str(multiplayer.get_unique_id())
+	
+func _on_join_pressed():
+	$NetworkInfo/NetworkSideDisplay.text = "Client"
+	$Menu.visible = false
+	multiplayer_peer.create_client(ADRESS, PORT) 
+	multiplayer.multiplayer_peer = multiplayer_peer
+	$NetworkInfo/UniquePeerID.text = str(multiplayer.get_unique_id())
+	
