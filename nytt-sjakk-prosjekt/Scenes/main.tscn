@@ -97,8 +97,7 @@ texture = ExtResource("8_o3mvs")
 [node name="Main" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(74, -74)
-zoom = Vector2(4, 4)
+position = Vector2(306, -194)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -231,3 +230,5 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_ebnn4")
 theme_override_styles/normal = SubResource("StyleBoxTexture_y0rda")
 
 [node name="board" parent="." instance=ExtResource("1_807bc")]
+position = Vector2(200, -200)
+scale = Vector2(0.497, 0.472)
