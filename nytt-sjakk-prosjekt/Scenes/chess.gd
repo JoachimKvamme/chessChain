@@ -86,8 +86,8 @@ var black_rook_right = false
 
 var en_passant = null
 
-var white_king_pos = Vector2(0, 4)
 var black_king_pos = Vector2(7, 4)
+var white_king_pos = Vector2(0, 4)
 
 var fifty_move_rule = 0
 
@@ -100,6 +100,28 @@ var amount_of_same : Array = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	white = true
+	state = false
+	moves = []
+
+	promotion_square = null
+
+	white_king = false
+	black_king = false
+	white_rook_left = false
+	white_rook_right = false
+	black_rook_left = false
+	black_rook_right = false
+
+	en_passant = null
+
+	black_king_pos = Vector2(7, 4)
+	white_king_pos = Vector2(0, 4)
+
+	fifty_move_rule = 0
+
+	unique_board_moves = []
+	amount_of_same = []
 	board.append([4, 2, 3, 5, 6, 3, 2, 4])
 	board.append([1, 1, 1, 1, 1, 1, 1, 1])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
