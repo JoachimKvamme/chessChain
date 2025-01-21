@@ -1,22 +1,17 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 
 
 public partial class P2p : Node
 {
-	//// Called when the node enters the scene tree for the first time.
-	//public override void _Ready()
-	//{
-	//}
-//
-	//// Called every frame. 'delta' is the elapsed time since the previous frame.
-	//public override void _Process(double delta)
-	//
-	
 	private TcpListener _tcpListener;
+	private TcpClient _tcpClient{get;set;}
 	
 	public void TCPServer()
 	{
@@ -25,14 +20,20 @@ public partial class P2p : Node
 	
 	private void StartServer()
 	{
-		int port = 40404;
-		string hostAdress = "127.0.0.1"; // Localhost. Change to actual IP? Can the program find it?
-		_tcpListener = new TcpListener(IPAddress.Parse(hostAdress), port); // creates listener using port and hostAdress
+		int port = 40404; // Localhost. Change to actual IP? Can the program find it?
+		_tcpListener = new TcpListener(IPAddress.Any, port); // creates listener using port and hostAdress
 		_tcpListener.Start(); // starts listener created above
 		
-		byte[] buffer = new byte[256];
-		string receivedMessage; // TODO: Endre til noe mer fornuftig, so f.eks. "opponentsMove";
+		while(true)
+		{
+			var opponent = _tcpListener.AcceptTcpClient();
+			_tcpClient = opponent;
+			var task = ClientHandler();
+		}
+	}
+	
+	private async Task ClientHandler()
+	{
 		
-		//adding parsed data loop in the future here.
 	}
 }
