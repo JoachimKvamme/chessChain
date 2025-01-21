@@ -34,6 +34,8 @@ public partial class P2p : Node
 	
 	private async Task ClientHandler()
 	{
-		
+		var opponent = _tcpClient;
+		var stream = opponent.GetStream();
+		var reader = new StreamReader(stream);
 	}
 }
