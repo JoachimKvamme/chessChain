@@ -96,7 +96,12 @@ var amount_of_same : Array = []
 
 var move_number = 0
 
+var line
+var row
 
+var capture : bool = false
+
+var parsed_selected : String = ""
 
 
 
@@ -155,10 +160,11 @@ func _input(event):
 			if !state && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
 				selected_piece = Vector2(var2, var1)
 				show_options()
+				parsed_selected = parse_move(var2, var1)
 				state = true
 			elif state:
-				record_move(var2, var1)
 				set_moves(var2, var1)
+				print(parse_move(var2, var1))
 			
 func is_mouse_out():
 	#if get_global_mouse_position().x < 0 || get_global_mouse_position().x > 144 || get_global_mouse_position().y > 0 || get_global_mouse_position().y < -144: return true
@@ -231,6 +237,7 @@ func set_moves(var2, var1):
 					elif en_passant != null:
 						if en_passant.y == i.y && selected_piece.y != i.y && en_passant.x == selected_piece.x:
 							board[en_passant.x][en_passant.y] = 0
+							capture = true
 						
 					
 				-1:
@@ -242,6 +249,7 @@ func set_moves(var2, var1):
 					elif en_passant != null:
 						if en_passant.y == i.y && selected_piece.y != i.y && en_passant.x == selected_piece.x:
 							board[en_passant.x][en_passant.y] = 0
+							capture = true
 				4:
 					if selected_piece.x == 0 && selected_piece.y == 0: white_rook_left = true
 					elif selected_piece.x == 0 && selected_piece.y == 7: white_rook_right = true
@@ -279,6 +287,8 @@ func set_moves(var2, var1):
 							board[7][5] = -4
 					black_king_pos = i
 			if !just_now: en_passant = null
+			if (white && board[var2][var1] < 0) || (!white && board[var2][var1] > 0):
+				capture = true
 			board[var2][var1] = board[selected_piece.x][selected_piece.y]
 			board[selected_piece.x][selected_piece.y] = 0
 			white = !white
@@ -628,52 +638,340 @@ func threefold_repetition(var1 : Array):
 	unique_board_moves.append(var1.duplicate(true))
 	amount_of_same.append(1)
 	
-func record_move(var2, var1):
-	var turn = ""
-	var line
-	var row
-	match var2:
-		0:
-			line = 1
-		1:
-			line = 2
-		2:
-			line = 3
-		3:
-			line = 4
-		4:
-			line = 5
-		5:
-			line = 6
-		6:
-			line = 7
-		7:
-			line = 8
-	match var1:
-		0:
-			row = "a"
-		1:
-			row = "b"
-		2:
-			row = "c"
-		3:
-			row = "d"
-		4:
-			row = "e"
-		5:
-			row = "f"
-		6:
-			row = "g"
-		7:
-			row = "h"
+	
+
+	
+func parse_move(var2, var1):
+	var moves : Array
+	var parsed_move
+	
+	if board[var2][var1] == 1 || board[var2][var1] == -1:
+		if capture:
+			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
+			capture = false
+		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+			parsed_move = pawn_move(var2, var1) + "+"
+		else:
+			parsed_move = pawn_move(var2, var1)
+		
+	if board[var2][var1] == 2 || board[var2][var1] == -2:
+		if capture:
+			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
+			capture = false
+		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+			parsed_move = knight_move(var2, var1) + "+"
+		else:
+			parsed_move = knight_move(var2, var1)
+	if board[var2][var1] == 3 || board[var2][var1] == -3:
+		if capture:
+			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
+			capture = false
+		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+			parsed_move = bishop_move(var2, var1) + "+"
+		else:
+			parsed_move = bishop_move(var2, var1)
+	if board[var2][var1] == 4 || board[var2][var1] == -4 :
+		if capture:
+			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
+			capture = false
+		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+			parsed_move = rook_move(var2, var1) + "+"
+		else:
+			parsed_move = rook_move(var2, var1)
+	if board[var2][var1] == 5 || board[var2][var1] == -5:
+		if capture:
+			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
+			capture = false
+		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+			parsed_move = queen_move(var2, var1) + "+"
+		else:
+			parsed_move = queen_move(var2, var1)
+	if board[var2][var1] == 6 || board[var2][var1] == -6:
+		if capture:
+			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
+			capture = false
+		else:
+			parsed_move = king_move(var2, var1)
+		
 	move_number = int(move_number)
 	if white: 
 		move_number += 1
-		turn = "White "
-	else:
-		turn = "Black "
-	
 	move_number = str(move_number)
-	line = str(line)
-	print(turn + move_number + "." + " " + row + "." + " " + line)
+	
+	return parsed_move
+	
+func parsed_selected_piece(var2, var1):
+	var selected
+	if board[var2][var1] == 1 || board[var2][var1] == -1:
+		selected = pawn_move(var2, var1)
+	if board[var2][var1] == 2 || board[var2][var1] == -2:
+		selected = knight_move(var2, var1)
+	if board[var2][var1] == 3 || board[var2][var1] == -3:
+		selected = bishop_move(var2, var1)
+	if board[var2][var1] == 4 || board[var2][var1] == -4:
+		selected = rook_move(var2, var1)
+	if board[var2][var1] == 5 || board[var2][var1] == -5:
+		selected = queen_move(var2, var1)
+	if board[var2][var1] == 6 || board[var2][var1] == -6:
+		selected = king_move(var2, var1)
+	return selected
+
+func parsed_capture(var2, var1):
+		match var2:
+			0:
+				line = 1
+			1:
+				line = 2
+			2:
+				line = 3
+			3:
+				line = 4
+			4:
+				line = 5
+			5:
+				line = 6
+			6:
+				line = 7
+			7:
+				line = 8
+		match var1:
+			0:
+				row = "a"
+			1:
+				row = "b"
+			2:
+				row = "c"
+			3:
+				row = "d"
+			4:
+				row = "e"
+			5:
+				row = "f"
+			6:
+				row = "g"
+			7:
+				row = "h"
+		return row + str(line)
+
+func pawn_move(var2, var1):
+	
+		match var2:
+			0:
+				line = 1
+			1:
+				line = 2
+			2:
+				line = 3
+			3:
+				line = 4
+			4:
+				line = 5
+			5:
+				line = 6
+			6:
+				line = 7
+			7:
+				line = 8
+		match var1:
+			0:
+				row = "a"
+			1:
+				row = "b"
+			2:
+				row = "c"
+			3:
+				row = "d"
+			4:
+				row = "e"
+			5:
+				row = "f"
+			6:
+				row = "g"
+			7:
+				row = "h"
+		return row + str(line)
+func knight_move(var2, var1):
+		match var2:
+			0:
+				line = 1
+			1:
+				line = 2
+			2:
+				line = 3
+			3:
+				line = 4
+			4:
+				line = 5
+			5:
+				line = 6
+			6:
+				line = 7
+			7:
+				line = 8
+		match var1:
+			0:
+				row = "Na"
+			1:
+				row = "Nb"
+			2:
+				row = "Nc"
+			3:
+				row = "Nd"
+			4:
+				row = "Ne"
+			5:
+				row = "Nf"
+			6:
+				row = "Ng"
+			7:
+				row = "Nh"
+		return row + str(line)
+func bishop_move(var2, var1):
+		match var2:
+			0:
+				line = 1
+			1:
+				line = 2
+			2:
+				line = 3
+			3:
+				line = 4
+			4:
+				line = 5
+			5:
+				line = 6
+			6:
+				line = 7
+			7:
+				line = 8
+		match var1:
+			0:
+				row = "Ba"
+			1:
+				row = "Bb"
+			2:
+				row = "Bc"
+			3:
+				row = "Bd"
+			4:
+				row = "Be"
+			5:
+				row = "Bf"
+			6:
+				row = "Bg"
+			7:
+				row = "Bh"
+		return row + str(line)
+func rook_move(var2, var1):
+		match var2:
+			0:
+				line = 1
+			1:
+				line = 2
+			2:
+				line = 3
+			3:
+				line = 4
+			4:
+				line = 5
+			5:
+				line = 6
+			6:
+				line = 7
+			7:
+				line = 8
+		match var1:
+			0:
+				row = "Ra"
+			1:
+				row = "Rb"
+			2:
+				row = "Rc"
+			3:
+				row = "Rd"
+			4:
+				row = "Re"
+			5:
+				row = "Rf"
+			6:
+				row = "Rg"
+			7:
+				row = "Rh"
+		return row + str(line)
+func queen_move(var2, var1):
+		match var2:
+			0:
+				line = 1
+			1:
+				line = 2
+			2:
+				line = 3
+			3:
+				line = 4
+			4:
+				line = 5
+			5:
+				line = 6
+			6:
+				line = 7
+			7:
+				line = 8
+		match var1:
+			0:
+				row = "Qa"
+			1:
+				row = "Qb"
+			2:
+				row = "Qc"
+			3:
+				row = "Qd"
+			4:
+				row = "Qe"
+			5:
+				row = "Qf"
+			6:
+				row = "Qg"
+			7:
+				row = "Qh"
+		return row + str(line)
+func king_move(var2, var1):
+		match var2:
+			0:
+				line = 1
+			1:
+				line = 2
+			2:
+				line = 3
+			3:
+				line = 4
+			4:
+				line = 5
+			5:
+				line = 6
+			6:
+				line = 7
+			7:
+				line = 8
+		match var1:
+			0:
+				row = "Ka"
+			1:
+				row = "Kb"
+			2:
+				row = "Kc"
+			3:
+				row = "Kd"
+			4:
+				row = "Ke"
+			5:
+				row = "Kf"
+			6:
+				row = "Kg"
+			7:
+				row = "Kh"
+		return row + str(line)
+
+	
+	
+	
 	
