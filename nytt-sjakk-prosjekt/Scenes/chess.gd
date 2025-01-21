@@ -629,7 +629,7 @@ func threefold_repetition(var1 : Array):
 	amount_of_same.append(1)
 	
 func record_move(var2, var1):
-	
+	var turn = ""
 	var line
 	var row
 	match var2:
@@ -667,8 +667,13 @@ func record_move(var2, var1):
 		7:
 			row = "h"
 	move_number = int(move_number)
-	move_number += 1
+	if white: 
+		move_number += 1
+		turn = "White "
+	else:
+		turn = "Black "
+	
 	move_number = str(move_number)
 	line = str(line)
-	print(move_number + "." + " " + row + "." + " " + line)
+	print(turn + move_number + "." + " " + row + "." + " " + line)
 	
