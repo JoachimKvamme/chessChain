@@ -103,6 +103,8 @@ var capture : bool = false
 
 var parsed_selected : String = ""
 
+var move_was_made = false
+
 
 
 # Called when the node enters the scene tree for the first time.
@@ -158,13 +160,15 @@ func _input(event):
 			var var1 = snapped(get_global_mouse_position().x, 0) / CELL_WIDHT
 			var var2 = abs(snapped(get_global_mouse_position().y, 0) / CELL_WIDHT)
 			if !state && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
+				move_was_made = false
 				selected_piece = Vector2(var2, var1)
 				show_options()
-				parsed_selected = scan_move(var2, var1)
+				parsed_selected = scan_selected_piece(var2, var1)
 				state = true
 			elif state:
 				set_moves(var2, var1)
-				print(scan_move(var2, var1))
+				if scan_move(var2, var1) != null:
+					print(scan_move(var2, var1))
 			
 func is_mouse_out():
 	#if get_global_mouse_position().x < 0 || get_global_mouse_position().x > 144 || get_global_mouse_position().y > 0 || get_global_mouse_position().y < -144: return true
@@ -298,6 +302,7 @@ func set_moves(var2, var1):
 	delete_dots()
 	
 	state = false
+	move_was_made = true
 	
 	if (selected_piece.x != var2 || selected_piece.y != var1) && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
 		selected_piece = Vector2(var2, var1)
@@ -647,6 +652,9 @@ func threefold_repetition(var1 : Array):
 func scan_move(var2, var1):
 	var moves : Array
 	var parsed_move
+	var selected_piece
+	
+	if state: return
 	
 	if board[var2][var1] == 1 || board[var2][var1] == -1:
 		if capture:
@@ -661,7 +669,7 @@ func scan_move(var2, var1):
 		if is_checkmate():
 				return pawn_move(var2, var1) + "++"
 		else:
-			return pawn_move(var2, var1)
+			return pawn_move(var2, var1)  
 		
 	if board[var2][var1] == 2 || board[var2][var1] == -2:
 		if capture:
@@ -723,6 +731,10 @@ func scan_move(var2, var1):
 		if capture:
 			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
 			capture = false
+		if parsed_selected == "Ke1" && king_move(var2, var1) == "Kg1" || parsed_selected == "Ke8" && king_move(var2, var1) == "Kg8":
+			return "0-0"
+		if parsed_selected == "Ke1" && king_move(var2, var1) == "Kc1" || parsed_selected == "Ke8" && king_move(var2, var1) == "Kc8":
+			return "0-0-0"
 		else:
 			parsed_move = king_move(var2, var1)
 			return parsed_move
