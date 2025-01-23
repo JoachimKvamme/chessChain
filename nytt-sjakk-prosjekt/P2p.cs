@@ -41,8 +41,18 @@ public partial class P2p : Node
 		while(true)
 		{
 			var move = await reader.ReadLineAsync();
-			//Send move til brett
-			
+			WriteMessage(move, opponent.Client.Handle);
 		}
+		
+		// To close the connection. Not sure how this will play out, commenting it out for now.
+		//finally
+		//{
+			//opponent.Close();
+		//}
+	}
+	
+	private void WriteMessage(string move, int handle)
+	{
+		
 	}
 }
