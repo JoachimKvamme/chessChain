@@ -37,5 +37,12 @@ public partial class P2p : Node
 		var opponent = _tcpClient;
 		var stream = opponent.GetStream();
 		var reader = new StreamReader(stream);
+
+		while(true)
+		{
+			var move = await reader.ReadLineAsync();
+			//Send move til brett
+			
+		}
 	}
 }
