@@ -657,6 +657,8 @@ func parse_move(var2, var1):
 	if board[var2][var1] == 2 || board[var2][var1] == -2:
 		if capture:
 			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
+			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+				parsed_move = parsed_move + "+"
 			capture = false
 		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			parsed_move = knight_move(var2, var1) + "+"
@@ -666,6 +668,8 @@ func parse_move(var2, var1):
 		if capture:
 			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
 			capture = false
+			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+				parsed_move = parsed_move + "+"
 		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			parsed_move = bishop_move(var2, var1) + "+"
 		else:
@@ -674,6 +678,8 @@ func parse_move(var2, var1):
 		if capture:
 			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
 			capture = false
+			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+				parsed_move = parsed_move + "+"
 		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			parsed_move = rook_move(var2, var1) + "+"
 		else:
@@ -682,6 +688,8 @@ func parse_move(var2, var1):
 		if capture:
 			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
 			capture = false
+			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+				parsed_move = parsed_move + "+"
 		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			parsed_move = queen_move(var2, var1) + "+"
 		else:
