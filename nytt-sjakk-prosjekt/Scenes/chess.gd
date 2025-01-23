@@ -609,6 +609,9 @@ func is_stalemate():
 				if board[i][j] < 0:
 					if get_moves(Vector2(i, j)) != []: return false
 	return true
+	
+func is_checkmate():
+	if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos): return true
 
 func insufficient_material():
 	var white_piece = 0
@@ -649,6 +652,8 @@ func parse_move(var2, var1):
 		if capture:
 			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
 			capture = false
+			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+				parsed_move = parsed_move + "+"
 		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			parsed_move = pawn_move(var2, var1) + "+"
 		else:
@@ -660,7 +665,7 @@ func parse_move(var2, var1):
 			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 				parsed_move = parsed_move + "+"
 			capture = false
-		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+		if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			parsed_move = knight_move(var2, var1) + "+"
 		else:
 			parsed_move = knight_move(var2, var1)
@@ -670,7 +675,7 @@ func parse_move(var2, var1):
 			capture = false
 			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 				parsed_move = parsed_move + "+"
-		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+		if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			parsed_move = bishop_move(var2, var1) + "+"
 		else:
 			parsed_move = bishop_move(var2, var1)
@@ -678,10 +683,12 @@ func parse_move(var2, var1):
 		if capture:
 			parsed_move = parsed_selected + "x" + parsed_capture(var2, var1)
 			capture = false
-			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+			if (white && is_in_check(white_king_pos)) || (!white && is_in_check(black_king_pos)):
 				parsed_move = parsed_move + "+"
-		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+		if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			parsed_move = rook_move(var2, var1) + "+"
+		if white && is_checkmate() || !white && is_checkmate():
+			parsed_move = rook_move(var2, var1) + "++"
 		else:
 			parsed_move = rook_move(var2, var1)
 	if board[var2][var1] == 5 || board[var2][var1] == -5:
@@ -690,7 +697,7 @@ func parse_move(var2, var1):
 			capture = false
 			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 				parsed_move = parsed_move + "+"
-		elif white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
+		if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			parsed_move = queen_move(var2, var1) + "+"
 		else:
 			parsed_move = queen_move(var2, var1)
