@@ -5,14 +5,15 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-public partial class P2p : Node
+public partial class P2p
 {
-	private TcpListener? tcpListener;
+	private TcpListener? _tcpListener;
 	private List<TcpClient> tcpClients = new List<TcpClient>();
 	private TcpClient _newClient {get;set;}
-	public List<Thread?> ClientThreads {get;set;} = [];
+	public List<Thread?> ClientThreads {get;set;}
 	
-	public async Task StartServer(int port)
+	// async threading missing
+	public void StartServer()
 	{
 		int port = 40404; // Localhost. Change to actual IP? Can the program find it?
 		_tcpListener = new TcpListener(IPAddress.Any, port); // creates listener using port and hostAdress
@@ -20,14 +21,16 @@ public partial class P2p : Node
 		
 		while(true)
 		{
-			var opponent = tcpListener.AcceptTcpClient();
+			var opponent = _tcpListener.AcceptTcpClient();
 			_newClient = opponent;
 			tcpClients.Add(opponent);
-			var task = ClientHandler();
+			//Can't use Task
+			//var task = 
+			ClientHandler();
 		}
 	}
-
-	private async Task ClientHandler()
+// async threading missing
+	private void ClientHandler()
 	{
 		var opponent = _newClient;
 		var stream = opponent.GetStream();
@@ -35,17 +38,19 @@ public partial class P2p : Node
 		
 		while(true)
 		{
-			var move = await reader.ReadLineAsync();
+			//removed await operator
+			var move = reader.ReadLineAsync();
 			
-			var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
+			var writer = new StreamWriter(opponent.GetStream()) { AutoFlush = true };
 			writer.WriteLine(move);
 		}
 		
 		// To close the connection. Not sure how this will play out, commenting it out for now.
 		//finally
 		//{
-			//tcpClients.Remove(client);
+			//tcpClients.Remove(opponent);
 			//opponet.Close();
 		//}
 
 	}
+}
