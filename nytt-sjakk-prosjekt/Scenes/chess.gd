@@ -96,8 +96,8 @@ var amount_of_same : Array = []
 
 var move_number = 0
 
-var line
-var row
+var line : String = ""
+var row : String = ""
 
 var capture : bool = false
 
@@ -105,6 +105,11 @@ var parsed_selected : String = ""
 
 var move_was_made = false
 
+var game : Array 
+
+var play_from_array = true
+
+var game_index : int = 0
 
 
 # Called when the node enters the scene tree for the first time.
@@ -163,12 +168,15 @@ func _input(event):
 				move_was_made = false
 				selected_piece = Vector2(var2, var1)
 				show_options()
-				parsed_selected = scan_selected_piece(var2, var1)
+				scan_selected_piece(selected_piece.x, selected_piece.y)
+				print(parsed_selected)
 				state = true
 			elif state:
 				set_moves(var2, var1)
 				if scan_move(var2, var1) != null:
 					print(scan_move(var2, var1))
+					
+			
 			
 func is_mouse_out():
 	#if get_global_mouse_position().x < 0 || get_global_mouse_position().x > 144 || get_global_mouse_position().y > 0 || get_global_mouse_position().y < -144: return true
@@ -652,7 +660,6 @@ func threefold_repetition(var1 : Array):
 func scan_move(var2, var1):
 	var moves : Array
 	var parsed_move
-	var selected_piece
 	
 	if state: return
 	
@@ -741,40 +748,131 @@ func scan_move(var2, var1):
 	
 	return parsed_move
 	
+
+func parsed_move(algebraic_move : String):
+	var move : Vector2
+	if algebraic_move.substr(0, 1) == "a" || "b" || "c" || "d" || "e" || "f" || "g" || "h":
+		return parsed_pawn_move(algebraic_move)
+	else:
+		return parsed_piece_move(algebraic_move)
+	
+		
+func parsed_pawn_move(algebraic_move):
+	var move : Vector2
+	var row
+	var line
+	match algebraic_move.substr(0,1):
+		"a":
+			row = 0
+		"b":
+			row = 1
+		"c":
+			row = 2
+		"d":
+			row = 3
+		"e":
+			row = 4
+		"f":
+			row = 5
+		"g":
+			row = 6
+		"h":
+			row = 7
+	match algebraic_move.substr(1, 1):
+			"1":
+				line = 0
+			"2":
+				line = 1
+			"3":
+				line = 3
+			"4":
+				line = 4
+			"5":
+				line = 5
+			"6":
+				line = 6
+			"7":
+				line = 7
+			"8":
+				line = 8
+	
+	move = Vector2(row, line)
+	return move
+func parsed_piece_move(algebraic_move : String):
+	var move : Vector2
+	var row : float
+	var line : float
+	match algebraic_move.substr(1,1):
+		"a":
+			row = 0
+		"b":
+			row = 1
+		"c":
+			row = 2
+		"d":
+			row = 3
+		"e":
+			row = 4
+		"f":
+			row = 5
+		"g":
+			row = 6
+		"h":
+			row = 7
+	match algebraic_move.substr(2, 1):
+			"1":
+				line = 0
+			"2":
+				line = 1
+			"3":
+				line = 3
+			"4":
+				line = 4
+			"5":
+				line = 5
+			"6":
+				line = 6
+			"7":
+				line = 7
+			"8":
+				line = 8
+	
+	move = Vector2(row, line)
+	return move
+	
 func scan_selected_piece(var2, var1):
-	var selected
 	if board[var2][var1] == 1 || board[var2][var1] == -1:
-		selected = pawn_move(var2, var1)
+		parsed_selected = pawn_move(var2, var1)
 	if board[var2][var1] == 2 || board[var2][var1] == -2:
-		selected = knight_move(var2, var1)
+		parsed_selected = knight_move(var2, var1)
 	if board[var2][var1] == 3 || board[var2][var1] == -3:
-		selected = bishop_move(var2, var1)
+		parsed_selected = bishop_move(var2, var1)
 	if board[var2][var1] == 4 || board[var2][var1] == -4:
-		selected = rook_move(var2, var1)
+		parsed_selected = rook_move(var2, var1)
 	if board[var2][var1] == 5 || board[var2][var1] == -5:
-		selected = queen_move(var2, var1)
+		parsed_selected = queen_move(var2, var1)
 	if board[var2][var1] == 6 || board[var2][var1] == -6:
-		selected = king_move(var2, var1)
-	return selected
+		parsed_selected = king_move(var2, var1)
+	
 
 func parsed_capture(var2, var1):
 		match var2:
 			0:
-				line = 1
+				line = "1"
 			1:
-				line = 2
+				line = "2"
 			2:
-				line = 3
+				line = "3"
 			3:
-				line = 4
+				line = "4"
 			4:
-				line = 5
+				line = "5"
 			5:
-				line = 6
+				line = "6"
 			6:
-				line = 7
+				line = "7"
 			7:
-				line = 8
+				line = "8"
 		match var1:
 			0:
 				row = "a"
@@ -792,27 +890,27 @@ func parsed_capture(var2, var1):
 				row = "g"
 			7:
 				row = "h"
-		return row + str(line)
+		return row + line
 
 func pawn_move(var2, var1):
-	
+
 		match var2:
 			0:
-				line = 1
+				line = "1"
 			1:
-				line = 2
+				line = "2"
 			2:
-				line = 3
+				line = "3"
 			3:
-				line = 4
+				line = "4"
 			4:
-				line = 5
+				line = "5"
 			5:
-				line = 6
+				line = "6"
 			6:
-				line = 7
+				line = "7"
 			7:
-				line = 8
+				line = "8"
 		match var1:
 			0:
 				row = "a"
@@ -830,25 +928,26 @@ func pawn_move(var2, var1):
 				row = "g"
 			7:
 				row = "h"
-		return row + str(line)
+		return row + line
+		
 func knight_move(var2, var1):
 		match var2:
 			0:
-				line = 1
+				line = "1"
 			1:
-				line = 2
+				line = "2"
 			2:
-				line = 3
+				line = "3"
 			3:
-				line = 4
+				line = "4"
 			4:
-				line = 5
+				line = "5"
 			5:
-				line = 6
+				line = "6"
 			6:
-				line = 7
+				line = "7"
 			7:
-				line = 8
+				line = "8"
 		match var1:
 			0:
 				row = "Na"
@@ -866,25 +965,25 @@ func knight_move(var2, var1):
 				row = "Ng"
 			7:
 				row = "Nh"
-		return row + str(line)
+		return row + line
 func bishop_move(var2, var1):
 		match var2:
 			0:
-				line = 1
+				line = "1"
 			1:
-				line = 2
+				line = "2"
 			2:
-				line = 3
+				line = "3"
 			3:
-				line = 4
+				line = "4"
 			4:
-				line = 5
+				line = "5"
 			5:
-				line = 6
+				line = "6"
 			6:
-				line = 7
+				line = "7"
 			7:
-				line = 8
+				line = "8"
 		match var1:
 			0:
 				row = "Ba"
@@ -902,25 +1001,26 @@ func bishop_move(var2, var1):
 				row = "Bg"
 			7:
 				row = "Bh"
-		return row + str(line)
+		return row + line
+		
 func rook_move(var2, var1):
 		match var2:
 			0:
-				line = 1
+				line = "1"
 			1:
-				line = 2
+				line = "2"
 			2:
-				line = 3
+				line = "3"
 			3:
-				line = 4
+				line = "4"
 			4:
-				line = 5
+				line = "5"
 			5:
-				line = 6
+				line = "6"
 			6:
-				line = 7
+				line = "7"
 			7:
-				line = 8
+				line = "8"
 		match var1:
 			0:
 				row = "Ra"
@@ -938,25 +1038,26 @@ func rook_move(var2, var1):
 				row = "Rg"
 			7:
 				row = "Rh"
-		return row + str(line)
+		return row + line
+		
 func queen_move(var2, var1):
 		match var2:
 			0:
-				line = 1
+				line = "1"
 			1:
-				line = 2
+				line = "2"
 			2:
-				line = 3
+				line = "3"
 			3:
-				line = 4
+				line = "4"
 			4:
-				line = 5
+				line = "5"
 			5:
-				line = 6
+				line = "6"
 			6:
-				line = 7
+				line = "7"
 			7:
-				line = 8
+				line = "8"
 		match var1:
 			0:
 				row = "Qa"
@@ -974,25 +1075,25 @@ func queen_move(var2, var1):
 				row = "Qg"
 			7:
 				row = "Qh"
-		return row + str(line)
+		return row + line
 func king_move(var2, var1):
 		match var2:
 			0:
-				line = 1
+				line = "1"
 			1:
-				line = 2
+				line = "2"
 			2:
-				line = 3
+				line = "3"
 			3:
-				line = 4
+				line = "4"
 			4:
-				line = 5
+				line = "5"
 			5:
-				line = 6
+				line = "6"
 			6:
-				line = 7
+				line = "7"
 			7:
-				line = 8
+				line = "8"
 		match var1:
 			0:
 				row = "Ka"
@@ -1010,7 +1111,7 @@ func king_move(var2, var1):
 				row = "Kg"
 			7:
 				row = "Kh"
-		return row + str(line)
+		return row + line
 
 	
 	
