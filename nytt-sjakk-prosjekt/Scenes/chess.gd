@@ -179,8 +179,9 @@ func _input(event):
 				display_game()
 					
 func _input_play_from_array(event):
-	if event is InputEventKey:
-		if 
+	if event is InputEventKey and event.is_pressed():
+		if event.keycode == KEY_1:
+			print("1 was pressed")
 			
 func is_mouse_out():
 	#if get_global_mouse_position().x < 0 || get_global_mouse_position().x > 144 || get_global_mouse_position().y > 0 || get_global_mouse_position().y < -144: return true
