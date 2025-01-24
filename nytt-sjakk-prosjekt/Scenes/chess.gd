@@ -156,7 +156,8 @@ func _ready() -> void:
 	for button in black_buttons:
 		button.pressed.connect(self._on_button_pressed.bind(button))
 
-
+func reset():
+	_ready()
 
 func _input(event):
 	if event is InputEventMouseButton && event.is_pressed() && promotion_square == null:
@@ -177,7 +178,9 @@ func _input(event):
 					append_move(var2, var1)
 				display_game()
 					
-			
+func _input_play_from_array(event):
+	if event is InputEventKey:
+		if 
 			
 func is_mouse_out():
 	#if get_global_mouse_position().x < 0 || get_global_mouse_position().x > 144 || get_global_mouse_position().y > 0 || get_global_mouse_position().y < -144: return true
