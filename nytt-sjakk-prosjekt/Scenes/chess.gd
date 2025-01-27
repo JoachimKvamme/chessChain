@@ -168,6 +168,7 @@ func _input(event):
 				move_was_made = false
 				capture = false
 				selected_piece = Vector2(var2, var1)
+				print(var2, var1)
 				show_options()
 				scanned_selected = scan_selected_piece(var2, var1)
 				state = true
@@ -185,24 +186,23 @@ func _input(event):
 			reset()
 	
 	if event is InputEventKey and event.is_pressed():
-		if event.keycode == KEY_P:
-			reset()
-			print(game_from)
-			play_from_array()
-			print("P")
 
-func play_from_array():
-	var half_move
-	for i in game_to.size():
-		if white:
-			selected_piece = parsed_move(game_from[i][0])
-			half_move = parsed_move(game_to[i][0])
-		if !white:
-			selected_piece = parsed_move(game_from[i][1])
-			half_move = parsed_move(game_to[i][0])
-		var var1 = half_move[0]
-		var var2 = half_move[1]
-		set_moves(var1,var2)
+		if event.keycode == KEY_P:
+			play_from_input()
+			
+
+func play_from_input():
+	var var1
+	var var2
+	print(parsed_move("e4"))
+	selected_piece = parsed_move("e2")
+	show_options()
+	state = true
+	var2 = parsed_move("e4").x
+	var1 = parsed_move("e4").y
+	set_moves(var2, var1)
+	
+
 	
 
 func reset():
@@ -839,10 +839,32 @@ func scan_move(var2, var1):
 	
 
 func parsed_move(algebraic_move : String):
-	if algebraic_move.substr(0, 1) == "a" || "b" || "c" || "d" || "e" || "f" || "g" || "h":
-		return parsed_pawn_move(algebraic_move)
-	else:
-		return parsed_piece_move(algebraic_move)
+	match algebraic_move.substr(0,1):
+		"a":
+			return parsed_pawn_move(algebraic_move)
+		"b":
+			return parsed_pawn_move(algebraic_move)
+		"c":
+			return parsed_pawn_move(algebraic_move)
+		"d":
+			return parsed_pawn_move(algebraic_move)
+		"e":
+			return parsed_pawn_move(algebraic_move)
+		"f":
+			return parsed_pawn_move(algebraic_move)
+		"g":
+			return parsed_pawn_move(algebraic_move)
+		"h":
+			return parsed_pawn_move(algebraic_move)
+		"K":
+			return parsed_piece_move(algebraic_move)
+		"Q":
+			return parsed_piece_move(algebraic_move)
+		"B":
+			return parsed_piece_move(algebraic_move)
+		"N":
+			return parsed_piece_move(algebraic_move)
+		
 	
 		
 func parsed_pawn_move(algebraic_move):
@@ -872,19 +894,19 @@ func parsed_pawn_move(algebraic_move):
 			"2":
 				line = 1
 			"3":
-				line = 3
+				line = 2
 			"4":
-				line = 4
+				line = 3
 			"5":
-				line = 5
+				line = 4
 			"6":
-				line = 6
+				line = 5
 			"7":
-				line = 7
+				line = 6
 			"8":
-				line = 8
+				line = 7
 	
-	move = Vector2(row, line)
+	move = Vector2(line, row)
 	return move
 func parsed_piece_move(algebraic_move : String):
 	var move : Vector2
@@ -913,19 +935,19 @@ func parsed_piece_move(algebraic_move : String):
 			"2":
 				line = 1
 			"3":
-				line = 3
+				line = 2
 			"4":
-				line = 4
+				line = 3
 			"5":
-				line = 5
+				line = 4
 			"6":
-				line = 6
+				line = 5
 			"7":
-				line = 7
+				line = 6
 			"8":
-				line = 8
+				line = 7
 	
-	move = Vector2(row, line)
+	move = Vector2(line, row)
 	return move
 	
 func scan_selected_piece(var2, var1):
