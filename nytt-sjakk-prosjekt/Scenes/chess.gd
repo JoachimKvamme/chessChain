@@ -105,9 +105,8 @@ var scanned_selected : String = ""
 
 var move_was_made = false
 
-var game : Array = [[]]
-
-var play_from_array = true
+var game_from : Array = [[]]
+var game_to : Array = [[]]
 
 var game_index : int = 0
 
@@ -136,6 +135,8 @@ func _ready() -> void:
 
 	unique_board_moves = []
 	amount_of_same = []
+	game_from = [[]]
+	game_to = [[]]
 	board.append([4, 2, 3, 5, 6, 3, 2, 4])
 	board.append([1, 1, 1, 1, 1, 1, 1, 1])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
@@ -156,8 +157,6 @@ func _ready() -> void:
 	for button in black_buttons:
 		button.pressed.connect(self._on_button_pressed.bind(button))
 
-func reset():
-	_ready()
 
 func _input(event):
 	if event is InputEventMouseButton && event.is_pressed() && promotion_square == null:
@@ -176,12 +175,59 @@ func _input(event):
 				set_moves(var2, var1)
 				if scan_move(var2, var1) != null:
 					append_move(var2, var1)
+					append_selected(selected_piece[0], selected_piece[1])
 				display_game()
-					
-func _input_play_from_array(event):
+				
 	if event is InputEventKey and event.is_pressed():
-		if event.keycode == KEY_1:
-			print("1 was pressed")
+		if event.keycode == KEY_R:
+			print("R")
+			reset()
+	
+	if event is InputEventKey and event.is_pressed():
+		if event.keycode == KEY_P:
+			reset()
+			play_from_array()
+			print("P")
+
+func play_from_array():
+	print("")
+	
+
+func reset():
+	white = true
+	state = false
+	moves = []
+
+	promotion_square = null
+
+	white_king = false
+	black_king = false
+	white_rook_left = false
+	white_rook_right = false
+	black_rook_left = false
+	black_rook_right = false
+
+	en_passant = null
+
+	black_king_pos = Vector2(7, 4)
+	white_king_pos = Vector2(0, 4)
+
+	fifty_move_rule = 0
+
+	unique_board_moves = []
+	amount_of_same = []
+	game_index = 0
+	
+	board = [[4, 2, 3, 5, 6, 3, 2, 4],
+	[1, 1, 1, 1, 1, 1, 1, 1],
+	[0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0],
+	[-1, -1, -1, -1, -1, -1, -1, -1],
+	[-4, -2, -3, -5, -6, -3, -2, -4]]
+	
+	display_board()
 			
 func is_mouse_out():
 	#if get_global_mouse_position().x < 0 || get_global_mouse_position().x > 144 || get_global_mouse_position().y > 0 || get_global_mouse_position().y < -144: return true
@@ -663,19 +709,28 @@ func threefold_repetition(var1 : Array):
 func append_move(var2, var1):
 	if !white:
 		game_index += 1
-		game.append([])
+		game_to.append([])
 	var played_move
 	played_move = scan_move(var2, var1)
-	game[game_index].append(played_move)
+	game_to[game_index].append(played_move)
+	
+func append_selected(var2, var1):
+	if !white:
+		game_from.append([])
+	var played_move
+	played_move = scan_move(var2, var1)
+	game_from[game_index].append(played_move)
+	
+	
 
 func display_game():
 	var game_string = ""
 	var i = 1
 	
-	while i < game.size():
+	while i < game_to.size():
 		game_string = game_string + "\n" + str(i) + ". "
-		for x in game[i]:
-			if game.size() % 2 != 0:
+		for x in game_to[i]:
+			if game_to.size() % 2 != 0:
 				game_string = game_string + x
 			else:
 				game_string = game_string + " " + x
@@ -694,10 +749,10 @@ func scan_move(var2, var1):
 	if board[var2][var1] == 1 || board[var2][var1] == -1:
 		if capture:
 			if is_checkmate():
-				return scanned_selected + "x" + parsed_capture(var2,var1) + "++"
+				return scanned_selected + "x" + scanned_capture(var2,var1) + "++"
 			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 				return pawn_move(var2, var1) + "+"
-			return scanned_selected + "x" + parsed_capture(var2, var1)
+			return scanned_selected + "x" + scanned_capture(var2, var1)
 		if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			parsed_move = pawn_move(var2, var1) + "+"
 		if is_checkmate():
@@ -708,10 +763,10 @@ func scan_move(var2, var1):
 	if board[var2][var1] == 2 || board[var2][var1] == -2:
 		if capture:
 			if is_checkmate():
-				return scanned_selected + "x" + parsed_capture(var2,var1) + "++"
+				return scanned_selected + "x" + scanned_capture(var2,var1) + "++"
 			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 				return knight_move(var2, var1) + "+"
-			return scanned_selected + "x" + parsed_capture(var2, var1)
+			return scanned_selected + "x" + scanned_capture(var2, var1)
 		if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			return knight_move(var2, var1) + "+"
 		if is_checkmate():
@@ -721,10 +776,10 @@ func scan_move(var2, var1):
 	if board[var2][var1] == 3 || board[var2][var1] == -3:
 		if capture:
 			if is_checkmate():
-				return scanned_selected + "x" + parsed_capture(var2,var1) + "++"
+				return scanned_selected + "x" + scanned_capture(var2,var1) + "++"
 			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
-				return scanned_selected + "x" + parsed_capture(var2,var1) + "+"
-			return scanned_selected + "x" + parsed_capture(var2, var1)
+				return scanned_selected + "x" + scanned_capture(var2,var1) + "+"
+			return scanned_selected + "x" + scanned_capture(var2, var1)
 		if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			return bishop_move(var2, var1) + "+"
 		if is_checkmate():
@@ -735,10 +790,10 @@ func scan_move(var2, var1):
 	if board[var2][var1] == 4 || board[var2][var1] == -4 :
 		if capture:
 			if is_checkmate():
-				return scanned_selected + "x" + parsed_capture(var2,var1) + "++"
+				return scanned_selected + "x" + scanned_capture(var2,var1) + "++"
 			if (white && is_in_check(white_king_pos)) || (!white && is_in_check(black_king_pos)):
-				return scanned_selected + "x" + parsed_capture(var2, var1) + "+"
-			return scanned_selected + "x" + parsed_capture(var2, var1)
+				return scanned_selected + "x" + scanned_capture(var2, var1) + "+"
+			return scanned_selected + "x" + scanned_capture(var2, var1)
 		if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			return rook_move(var2, var1) + "+"
 		if white && is_checkmate() || !white && is_checkmate():
@@ -748,10 +803,10 @@ func scan_move(var2, var1):
 	if board[var2][var1] == 5 || board[var2][var1] == -5:
 		if capture:
 			if is_checkmate():
-				return scanned_selected + "x" + parsed_capture(var2,var1) + "++"
+				return scanned_selected + "x" + scanned_capture(var2,var1) + "++"
 			if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
-				return scanned_selected + "x" + parsed_capture(var2,var1) + "+"
-			return scanned_selected + "x" + parsed_capture(var2, var1)
+				return scanned_selected + "x" + scanned_capture(var2,var1) + "+"
+			return scanned_selected + "x" + scanned_capture(var2, var1)
 		if white && is_in_check(white_king_pos) || !white && is_in_check(black_king_pos):
 			return queen_move(var2, var1) + "+"
 		if is_checkmate():
@@ -760,7 +815,7 @@ func scan_move(var2, var1):
 			return queen_move(var2, var1)
 	if board[var2][var1] == 6 || board[var2][var1] == -6:
 		if capture:
-			return scanned_selected + "x" + parsed_capture(var2, var1)
+			return scanned_selected + "x" + scanned_capture(var2, var1)
 		if scanned_selected == "Ke1" && king_move(var2, var1) == "Kg1" || scanned_selected == "Ke8" && king_move(var2, var1) == "Kg8":
 			return "0-0"
 		if scanned_selected == "Ke1" && king_move(var2, var1) == "Kc1" || scanned_selected == "Ke8" && king_move(var2, var1) == "Kc8":
@@ -773,7 +828,6 @@ func scan_move(var2, var1):
 	
 
 func parsed_move(algebraic_move : String):
-	var move : Vector2
 	if algebraic_move.substr(0, 1) == "a" || "b" || "c" || "d" || "e" || "f" || "g" || "h":
 		return parsed_pawn_move(algebraic_move)
 	else:
@@ -782,8 +836,8 @@ func parsed_move(algebraic_move : String):
 		
 func parsed_pawn_move(algebraic_move):
 	var move : Vector2
-	var row
-	var line
+	var row : float
+	var line : float
 	match algebraic_move.substr(0,1):
 		"a":
 			row = 0
@@ -878,7 +932,7 @@ func scan_selected_piece(var2, var1):
 		return king_move(var2, var1)
 	
 
-func parsed_capture(var2, var1):
+func scanned_capture(var2, var1):
 		match var2:
 			0:
 				line = "1"
