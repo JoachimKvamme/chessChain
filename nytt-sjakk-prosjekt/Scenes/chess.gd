@@ -108,6 +108,7 @@ var move_was_made = false
 var game_from : Array = [[]]
 var game_to : Array = [[]]
 
+
 var game_index : int = 0
 
 
@@ -135,8 +136,7 @@ func _ready() -> void:
 
 	unique_board_moves = []
 	amount_of_same = []
-	game_from = [[]]
-	game_to = [[]]
+
 	board.append([4, 2, 3, 5, 6, 3, 2, 4])
 	board.append([1, 1, 1, 1, 1, 1, 1, 1])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
@@ -173,10 +173,11 @@ func _input(event):
 				state = true
 			elif state:
 				set_moves(var2, var1)
-				if scan_move(var2, var1) != null:
+				if scan_move(var2, var1) != null && move_was_made:
 					append_move(var2, var1)
-					append_selected(selected_piece[0], selected_piece[1])
-				display_game()
+					append_selected(scanned_selected)
+					print(game_from)
+					display_game()
 				
 	if event is InputEventKey and event.is_pressed():
 		if event.keycode == KEY_R:
@@ -186,11 +187,22 @@ func _input(event):
 	if event is InputEventKey and event.is_pressed():
 		if event.keycode == KEY_P:
 			reset()
+			print(game_from)
 			play_from_array()
 			print("P")
 
 func play_from_array():
-	print("")
+	var half_move
+	for i in game_to.size():
+		if white:
+			selected_piece = parsed_move(game_from[i][0])
+			half_move = parsed_move(game_to[i][0])
+		if !white:
+			selected_piece = parsed_move(game_from[i][1])
+			half_move = parsed_move(game_to[i][0])
+		var var1 = half_move[0]
+		var var2 = half_move[1]
+		set_moves(var1,var2)
 	
 
 func reset():
@@ -708,17 +720,16 @@ func threefold_repetition(var1 : Array):
 	
 func append_move(var2, var1):
 	if !white:
-		game_index += 1
 		game_to.append([])
+		game_index += 1
 	var played_move
 	played_move = scan_move(var2, var1)
 	game_to[game_index].append(played_move)
 	
-func append_selected(var2, var1):
+func append_selected(played_move):
 	if !white:
 		game_from.append([])
-	var played_move
-	played_move = scan_move(var2, var1)
+
 	game_from[game_index].append(played_move)
 	
 	
