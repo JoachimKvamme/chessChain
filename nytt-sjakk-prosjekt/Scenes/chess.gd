@@ -108,9 +108,9 @@ var move_was_made = false
 var game_from : Array = [[]]
 var game_to : Array = [[]]
 
-
+var game_state : Array
 var game_index : int = 0
-
+var showing_board : int
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -146,6 +146,8 @@ func _ready() -> void:
 	board.append([-1, -1, -1, -1, -1, -1, -1, -1])
 	board.append([-4, -2, -3, -5, -6, -3, -2, -4])
 	
+	game_state.append(board)
+	
 	display_board()
 	
 	var white_buttons = get_tree().get_nodes_in_group("white_pieces")
@@ -177,31 +179,66 @@ func _input(event):
 				if scan_move(var2, var1) != null && move_was_made:
 					append_move(var2, var1)
 					append_selected(scanned_selected)
+					game_state.append(board)
 					print(game_from)
 					display_game()
+					
 				
 	if event is InputEventKey and event.is_pressed():
 		if event.keycode == KEY_R:
 			print("R")
 			reset()
-	
+				
 	if event is InputEventKey and event.is_pressed():
-
 		if event.keycode == KEY_P:
-			play_from_input()
+			play_from_input("Ng1", "Nf3")
 			
 
-func play_from_input():
+func play_from_input(from : String, to : String):
 	var var1
 	var var2
-	print(parsed_move("e4"))
-	selected_piece = parsed_move("e2")
-	show_options()
-	state = true
-	var2 = parsed_move("e4").x
-	var1 = parsed_move("e4").y
-	set_moves(var2, var1)
 	
+	var2 = parsed_move(from).x
+	var1 = parsed_move(from).y
+	
+	if !state && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
+	
+		print(parsed_move("e4"))
+		selected_piece = parsed_move(from)
+		show_options()
+		state = true
+	elif state:
+		var2 = parsed_move(to).x
+		var1 = parsed_move(to).y
+		set_moves(var2, var1)
+
+func flip_trough_moves(game_state : Array):
+	for child in pieces.get_children():
+		child.queue_free()
+	
+	for i in BOARD_SIZE:
+		for j in BOARD_SIZE:
+			var holder = TEXTURE_HOLDER.instantiate()
+			pieces.add_child(holder)
+			holder.global_position = Vector2(j * CELL_WIDHT + (CELL_WIDHT / 2), -i * CELL_WIDHT - (CELL_WIDHT / 2))
+			
+			match board[i][j]:
+				-6: holder.texture = BLACK_KING
+				-5: holder.texture = BLACK_QUEEN
+				-4: holder.texture = BLACK_ROOK
+				-3: holder.texture = BLACK_BISHOP
+				-2: holder.texture = BLACK_KNIGHT
+				-1: holder.texture = BLACK_PAWN
+				0: holder.texture = null
+				6: holder.texture = WHITE_KING
+				5: holder.texture = WHITE_QUEEN
+				4: holder.texture = WHITE_ROOK
+				3: holder.texture = WHITE_BISHOP
+				2: holder.texture = WHITE_KNIGHT
+				1: holder.texture = WHITE_PAWN
+				
+	if white: turn.texture = TURN_WHITE
+	else: turn.texture = TURN_BLACK
 
 	
 
