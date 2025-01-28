@@ -4,7 +4,7 @@ using System;
 public partial class NetworkClient : Node
 {
 	
-	private NetworkedMultiplayerENet _peer;
+	private ENetMultiplayerPeer _peer;
 	
 	public override void _Ready()
 	{
@@ -15,9 +15,9 @@ public partial class NetworkClient : Node
 	
 	public void ConnectToServer(string ipAdress, int port)
 	{
-		_peer = NetworkedMultiplayerENet;
-		_peer.CreateClient(ipAdress, port)
-		GetTree().NetworkPeer = _peer;
+		_peer = ENetMultiplayerPeer;
+		_peer.CreateClient(ipAdress, port);
+		GetTree().MultiplayerPeer = _peer;
 		
 		_peer.Connect("connection_failed", this, nameof(OnConnectionFailed));
 		_peer.Connect("server_disconnected", this, nameof(OnServerDisconnected));
@@ -37,9 +37,8 @@ public partial class NetworkClient : Node
 		RpcId(1, nameof(SendMove), move); // Send to server (id=1)
 	}
 
-	[Remote]
 	public void SendMoveRemote(string move)
 	{
-		GD.Print($"Message from server: {move}");
+		GD.Print($"{move}");
 	}
 }

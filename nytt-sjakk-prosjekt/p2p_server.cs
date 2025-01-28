@@ -3,7 +3,7 @@ using Godot;
 
 public class NetworkServer : Node
 {
-	private NetworkedMultiplayerENet _peer;
+	private ENetMultiplayerPeer _peer;
 	
 	public override void _Ready()
 	{
@@ -12,14 +12,13 @@ public class NetworkServer : Node
 	
 	public void StartServer()
 	{
-		_peer = new NetworkedMultiplayerENet;
+		_peer = new ENetMultiplayerPeer();
 		_peer.CreateServer(40404);
-		GetTree().NetworkPeer = _peer
-	}
-	
-			_peer.Connect("peer_connected", this, nameof(OnPeerConnected));
+		GetTree().MultiplayerPeer = _peer;
+		_peer.Connect("peer_connected", this, nameof(OnPeerConnected));
 		_peer.Connect("peer_disconnected", this, nameof(OnPeerDisconnected));
 	}
+	
 
 	private void OnPeerConnected(int id)
 	{
@@ -30,7 +29,7 @@ public class NetworkServer : Node
 	{
 		GD.Print($"Peer disconnected: {id}");
 	}
-	[Remote]
+	
 	public void SendMoveRemote(string move)
 	{
 		GD.Print($"Move received: {message}");
