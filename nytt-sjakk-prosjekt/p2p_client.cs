@@ -32,8 +32,14 @@ public partial class NetworkClient : Node
 	{
 		GD.Print("Disconnected from server!");
 	}
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+	public void SendMove(string move)
 	{
+		RpcId(1, nameof(SendMove), move); // Send to server (id=1)
+	}
+
+	[Remote]
+	public void SendMoveRemote(string move)
+	{
+		GD.Print($"Message from server: {move}");
 	}
 }

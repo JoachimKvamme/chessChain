@@ -30,4 +30,9 @@ public class NetworkServer : Node
 	{
 		GD.Print($"Peer disconnected: {id}");
 	}
+	[Remote]
+	public void SendMoveRemote(string move)
+	{
+		GD.Print($"Move received: {message}");
+	}
 }
