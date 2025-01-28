@@ -32,6 +32,6 @@ public class NetworkServer : Node
 	
 	public void SendMoveRemote(string move)
 	{
-		GD.Print($"Move received: {message}");
+		GD.Print($"Move received: {move}");
 	}
 }
