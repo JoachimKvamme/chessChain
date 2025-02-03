@@ -26,14 +26,24 @@ public partial class NetworkClient : Node
 		Multiplayer.ServerDisconnected += OnServerDisconnected;
 	}
 
-	private void OnConnectionFailed()
+	private void OnPeerConnected(long id)
 	{
-		GD.Print("Connection failed!");
+		GD.Print($"{id}: Connected successfully!");
 	}
 
+	private void OnPeerDisconnected(long id)
+	{
+		GD.Print($"{id}: Disconnected from server!");
+	}
+	
+	private void OnConnectionFailed()
+	{
+		GD.Print($"Connection failed");
+	}
+	
 	private void OnServerDisconnected()
 	{
-		GD.Print("Disconnected from server!");
+		GD.Print($"Connection to server lost");
 	}
 
 	// Call this method to send a move to the server
