@@ -1,37 +1,39 @@
 using System;
 using Godot;
 
-public class NetworkServer : Node
+public partial class NetworkServer : Node
 {
 	private ENetMultiplayerPeer _peer;
-	
+
 	public override void _Ready()
 	{
 		StartServer();
 	}
-	
+
 	public void StartServer()
 	{
 		_peer = new ENetMultiplayerPeer();
 		_peer.CreateServer(40404);
-		GetTree().MultiplayerPeer = _peer;
-		_peer.Connect("peer_connected", this, nameof(OnPeerConnected));
-		_peer.Connect("peer_disconnected", this, nameof(OnPeerDisconnected));
-	}
-	
 
-	private void OnPeerConnected(int id)
+		Multiplayer.MultiplayerPeer = _peer;
+
+		Multiplayer.PeerConnected += OnPeerConnected;
+		Multiplayer.PeerDisconnected += OnPeerDisconnected;
+	}
+
+	private void OnPeerConnected(long id)
 	{
 		GD.Print($"Peer connected: {id}");
 	}
 
-	private void OnPeerDisconnected(int id)
+	private void OnPeerDisconnected(long id)
 	{
 		GD.Print($"Peer disconnected: {id}");
 	}
-	
+
+	[Rpc]
 	public void SendMoveRemote(string move)
 	{
-		GD.Print($"Move received: {move}");
+		GD.Print($"Move received from client: {move}");
 	}
 }
