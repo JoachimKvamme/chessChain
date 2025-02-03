@@ -18,10 +18,12 @@ public partial class NetworkClient : Node
 		_peer.CreateClient(ipAddress, port);
 		
 		// Set the multiplayer peer using Multiplayer
-		GetTree().NetworkPeer = _peer;
+		Multiplayer.MultiplayerPeer = _peer;
 
-		_peer.Connect("connection_failed", this, nameof(OnConnectionFailed));
-		_peer.Connect("server_disconnected", this, nameof(OnServerDisconnected));
+		Multiplayer.PeerConnected += OnPeerConnected;
+		Multiplayer.PeerDisconnected += OnPeerDisconnected;
+		Multiplayer.ConnectionFailed += OnConnectionFailed;
+		Multiplayer.ServerDisconnected += OnServerDisconnected;
 	}
 
 	private void OnConnectionFailed()
@@ -37,6 +39,11 @@ public partial class NetworkClient : Node
 	// Call this method to send a move to the server
 	public void SendMove(string move)
 	{
+		if (Multiplayer.MultiplayerPeer == null || !Multiplayer.IsServer() && Multiplayer.GetUniqueId() == 0)
+		{
+			GD.PrintErr("Cannot send move: Not connected to the server.");
+			return;
+		}
 		RpcId(1, nameof(SendMoveRemote), move); // Send move to server with ID=1
 	}
 
