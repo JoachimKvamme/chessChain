@@ -12,6 +12,7 @@ public partial class NetworkServer : Node
 
 	public void StartServer()
 	{
+		GD.Print("fisk");
 		_peer = new ENetMultiplayerPeer();
 		_peer.CreateServer(40404);
 
