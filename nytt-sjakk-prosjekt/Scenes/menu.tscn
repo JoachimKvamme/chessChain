@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://bx3xegok1bpsc"]
+
+[ext_resource type="Texture2D" uid="uid://dbymew06tn512" path="res://Assets/Menu/menu background.png" id="1_qf8bk"]
+
+[node name="Sprite2D" type="Sprite2D"]
+position = Vector2(-150, -150)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("1_qf8bk")
+
+[node name="Host" type="Button" parent="."]
+offset_left = -217.0
+offset_top = -127.0
+offset_right = 212.0
+offset_bottom = -34.0
+text = "Host"
+
+[node name="Join" type="Button" parent="."]
+offset_left = -217.0
+offset_top = 23.0
+offset_right = 213.0
+offset_bottom = 116.0
+text = "Join"
