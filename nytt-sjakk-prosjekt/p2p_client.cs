@@ -5,7 +5,7 @@ public partial class NetworkClient : Node
 {
 	private ENetMultiplayerPeer _peer;
 
-	public override void _Ready()
+	public override void _Ready() // Might want to remove this and proceed directly to ConnectToServer
 	{
 		string ipAddress = "127.0.0.1";
 		int port = 40404;
@@ -14,7 +14,7 @@ public partial class NetworkClient : Node
 
 	public void ConnectToServer(string ipAddress, int port)
 	{
-		_peer = new ENetMultiplayerPeer();  // Fixed instantiation
+		_peer = new ENetMultiplayerPeer(); 
 		_peer.CreateClient(ipAddress, port);
 		
 		// Set the multiplayer peer using Multiplayer
