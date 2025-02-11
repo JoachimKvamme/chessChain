@@ -5,13 +5,10 @@ public partial class NetworkServer : Node
 {
 	private ENetMultiplayerPeer _peer;
 
-	public override void _Ready()
-	{
-		StartServer();
-	}
-
 	public void StartServer()
 	{
+		
+		GD.Print("starter server");
 		_peer = new ENetMultiplayerPeer();
 		_peer.CreateServer(40404);
 

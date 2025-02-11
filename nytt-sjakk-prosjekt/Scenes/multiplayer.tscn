@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3 uid="uid://cg64bpgarmdh5"]
+
+[ext_resource type="Script" path="res://Scenes/multiplayerController.gd" id="1_7m70b"]
+
+[node name="Multiplayer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -17.0
+offset_top = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7m70b")
+
+[node name="Host" type="Button" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 111.0
+offset_right = 133.0
+offset_bottom = 151.0
+text = "Host"
+
+[node name="Join" type="Button" parent="."]
+layout_mode = 0
+offset_left = 65.0
+offset_top = 64.0
+offset_right = 132.0
+offset_bottom = 102.0
+text = "Join"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 62.0
+offset_top = 165.0
+offset_right = 155.0
+offset_bottom = 201.0
+text = "Start game"
+
+[connection signal="button_down" from="Host" to="." method="_on_host_button_down"]
+[connection signal="button_down" from="Join" to="." method="_on_join_button_down"]
+[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
