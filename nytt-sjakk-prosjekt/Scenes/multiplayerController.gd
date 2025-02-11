@@ -1,7 +1,9 @@
 extends Control
 
 @export var adress = "127.0.0.1"
+@export var port = 8910
 
+var peer
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	multiplayer.peer_connected.connect(peer_connected)
@@ -16,10 +18,10 @@ func _process(delta: float) -> void:
 	pass
 
 func peer_connected(id):
-	print("Player connected" + id)
+	print("Player connected" + str(id))
 
 func peer_disconnected(id):
-	print("Player disconnected" + id)
+	print("Player disconnected" + str(id))
 
 func connected_to_server():
 	print("Connected to server")
@@ -28,10 +30,26 @@ func connection_failed():
 	print("Connection failed")
 
 func _on_host_button_down() -> void:
+	peer = ENetMultiplayerPeer.new()
+	var error = peer.create_server(port, 2)
+	
+	if error != OK:
+		print("Cannot host: " + str(error))
+		return
+	
+	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
+	
+	multiplayer.set_multiplayer_peer(peer)
+	print("Venter på spillere")
 	pass # Replace with function body.
 
 
 func _on_join_button_down() -> void:
+	peer = ENetMultiplayerPeer.new()
+	peer.create_client(adress, port)
+	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
+	
+	multiplayer.set_multiplayer_peer(peer)
 	pass # Replace with function body.
 
 

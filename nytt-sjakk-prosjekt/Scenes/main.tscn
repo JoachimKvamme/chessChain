@@ -1,6 +1,7 @@
-[gd_scene load_steps=40 format=3 uid="uid://nhgoro2d3el3"]
+[gd_scene load_steps=41 format=3 uid="uid://nhgoro2d3el3"]
 
 [ext_resource type="PackedScene" uid="uid://bo4nsnj3j80jn" path="res://Scenes/board.tscn" id="1_807bc"]
+[ext_resource type="PackedScene" uid="uid://cg64bpgarmdh5" path="res://Scenes/multiplayer.tscn" id="1_caj84"]
 [ext_resource type="Texture2D" uid="uid://bxy13c358tmpt" path="res://Assets/Chess/white_knight.png" id="1_nhpqk"]
 [ext_resource type="Texture2D" uid="uid://by5ortv302gby" path="res://Assets/Chess/white_bishop.png" id="2_6qcwx"]
 [ext_resource type="Texture2D" uid="uid://bgm2jae5hyj80" path="res://Assets/Chess/white_rook.png" id="3_8v5bk"]
@@ -96,6 +97,12 @@ texture = ExtResource("8_o3mvs")
 texture = ExtResource("8_o3mvs")
 
 [node name="Main" type="Node2D"]
+
+[node name="Multiplayer" parent="." instance=ExtResource("1_caj84")]
+offset_left = -231.0
+offset_top = -381.0
+offset_right = -214.0
+offset_bottom = -366.0
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(306, -194)
@@ -235,5 +242,6 @@ position = Vector2(200, -200)
 scale = Vector2(0.497, 0.472)
 
 [node name="menu" parent="." instance=ExtResource("10_appac")]
+visible = false
 position = Vector2(-136, -208.8)
 scale = Vector2(0.356, 0.504167)
