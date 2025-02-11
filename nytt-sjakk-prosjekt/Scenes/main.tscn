@@ -99,10 +99,10 @@ texture = ExtResource("8_o3mvs")
 [node name="Main" type="Node2D"]
 
 [node name="Multiplayer" parent="." instance=ExtResource("1_caj84")]
-offset_left = -231.0
-offset_top = -381.0
-offset_right = -214.0
-offset_bottom = -366.0
+offset_left = 411.0
+offset_top = -488.0
+offset_right = 428.0
+offset_bottom = -473.0
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(306, -194)

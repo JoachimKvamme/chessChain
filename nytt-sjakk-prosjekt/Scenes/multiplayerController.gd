@@ -18,16 +18,29 @@ func _process(delta: float) -> void:
 	pass
 
 func peer_connected(id):
-	print("Player connected" + str(id))
+	print("Player connected " + str(id))
 
 func peer_disconnected(id):
-	print("Player disconnected" + str(id))
+	print("Player disconnected " + str(id))
 
 func connected_to_server():
 	print("Connected to server")
+	send_player_information.rpc_id(1, $LineEdit.text, multiplayer.get_unique_id())
 
 func connection_failed():
 	print("Connection failed")
+	
+@rpc("any_peer")
+func send_player_information(name, id):
+	if !GameManager.players.has(id):
+		GameManager.players[id] = {
+			"name": name,
+			"id": id,
+			"score": 0
+		}
+	if multiplayer.is_server():
+		for i in GameManager.players:
+			send_player_information.rpc(GameManager.players[i].name, i) 
 
 func _on_host_button_down() -> void:
 	peer = ENetMultiplayerPeer.new()
@@ -41,6 +54,7 @@ func _on_host_button_down() -> void:
 	
 	multiplayer.set_multiplayer_peer(peer)
 	print("Venter på spillere")
+	send_player_information($LineEdit.text, multiplayer.get_unique_id())
 	pass # Replace with function body.
 
 
@@ -48,10 +62,10 @@ func _on_join_button_down() -> void:
 	peer = ENetMultiplayerPeer.new()
 	peer.create_client(adress, port)
 	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
-	
 	multiplayer.set_multiplayer_peer(peer)
 	pass # Replace with function body.
 
 
 func _on_button_button_down() -> void:
+	print("Start spill")
 	pass # Replace with function body.
