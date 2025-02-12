@@ -193,6 +193,8 @@ func _input(event):
 func _process(delta: float) -> void:
 	display_board()
 
+
+
 func play_from_input(from : String, to : String):
 	var var1
 	var var2
