@@ -97,6 +97,9 @@ texture = ExtResource("8_o3mvs")
 texture = ExtResource("8_o3mvs")
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_vbfft"]
+properties/0/path = NodePath("board:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
 
 [node name="Main" type="Node2D"]
 

@@ -69,7 +69,7 @@ const TILE_MARKING_WHITE_PERSPECTIVE = preload("res://Assets/ChessOriginal/tile_
 #  2 white knight
 #  1 white pawn
 
-var board : Array
+@export var board : Array
 var white : bool = true
 var state : bool = false
 var moves = []
@@ -160,6 +160,7 @@ func _ready() -> void:
 		button.pressed.connect(self._on_button_pressed.bind(button))
 
 
+
 func _input(event):
 	if event is InputEventMouseButton && event.is_pressed() && promotion_square == null:
 		if event.button_index == MOUSE_BUTTON_LEFT:
@@ -177,10 +178,6 @@ func _input(event):
 			elif state:
 				set_moves(var2, var1)
 				if scan_move(var2, var1) != null && move_was_made:
-					append_move(var2, var1)
-					append_selected(scanned_selected)
-					game_state.append(board)
-					print(game_from)
 					display_game()
 					
 				
@@ -192,7 +189,9 @@ func _input(event):
 	if event is InputEventKey and event.is_pressed():
 		if event.keycode == KEY_P:
 			play_from_input("Ng1", "Nf3")
-			
+
+func _process(delta: float) -> void:
+	display_board()
 
 func play_from_input(from : String, to : String):
 	var var1
