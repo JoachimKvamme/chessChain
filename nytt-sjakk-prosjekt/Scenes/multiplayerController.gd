@@ -30,6 +30,9 @@ func connected_to_server():
 func connection_failed():
 	print("Connection failed")
 	
+func players():
+	GameManager.players
+	
 @rpc("any_peer")
 func send_player_information(name, id):
 	if !GameManager.players.has(id):
@@ -67,5 +70,6 @@ func _on_join_button_down() -> void:
 
 
 func _on_button_button_down() -> void:
+	print(GameManager.players)
 	print("Start spill")
 	pass # Replace with function body.
