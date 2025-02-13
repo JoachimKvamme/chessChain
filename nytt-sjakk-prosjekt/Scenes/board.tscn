@@ -8,6 +8,9 @@
 properties/0/path = NodePath(".:board")
 properties/0/spawn = true
 properties/0/replication_mode = 1
+properties/1/path = NodePath(".:state")
+properties/1/spawn = true
+properties/1/replication_mode = 1
 
 [node name="board" type="Sprite2D"]
 position = Vector2(405, -424)

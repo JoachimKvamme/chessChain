@@ -71,7 +71,7 @@ const TILE_MARKING_WHITE_PERSPECTIVE = preload("res://Assets/ChessOriginal/tile_
 
 @export var board : Array
 var white : bool = true
-var state : bool = false
+@export var state : bool = false
 var moves = []
 var selected_piece : Vector2
 
@@ -162,33 +162,34 @@ func _ready() -> void:
 
 
 func _input(event):
-	if event is InputEventMouseButton && event.is_pressed() && promotion_square == null:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if is_mouse_out(): return
-			var var1 = snapped(get_global_mouse_position().x, 0) / CELL_WIDHT
-			var var2 = abs(snapped(get_global_mouse_position().y, 0) / CELL_WIDHT)
-			if !state && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
-				move_was_made = false
-				capture = false
-				selected_piece = Vector2(var2, var1)
-				print(var2, var1)
-				show_options()
-				scanned_selected = scan_selected_piece(var2, var1)
-				state = true
-			elif state:
-				set_moves(var2, var1)
-				if scan_move(var2, var1) != null && move_was_made:
-					display_game()
+	if is_multiplayer_authority():
+		if event is InputEventMouseButton && event.is_pressed() && promotion_square == null:
+			if event.button_index == MOUSE_BUTTON_LEFT:
+				if is_mouse_out(): return
+				var var1 = snapped(get_global_mouse_position().x, 0) / CELL_WIDHT
+				var var2 = abs(snapped(get_global_mouse_position().y, 0) / CELL_WIDHT)
+				if !state && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
+					move_was_made = false
+					capture = false
+					selected_piece = Vector2(var2, var1)
+					print(var2, var1)
+					show_options()
+					scanned_selected = scan_selected_piece(var2, var1)
+					state = true
+				elif state:
+					set_moves(var2, var1)
+					if scan_move(var2, var1) != null && move_was_made:
+						display_game()
+						
 					
-				
-	if event is InputEventKey and event.is_pressed():
-		if event.keycode == KEY_R:
-			print("R")
-			reset()
-				
-	if event is InputEventKey and event.is_pressed():
-		if event.keycode == KEY_P:
-			play_from_input("Ng1", "Nf3")
+		if event is InputEventKey and event.is_pressed():
+			if event.keycode == KEY_R:
+				print("R")
+				reset()
+					
+		if event is InputEventKey and event.is_pressed():
+			if event.keycode == KEY_P:
+				play_from_input("Ng1", "Nf3")
 
 func _process(delta: float) -> void:
 	display_board()
