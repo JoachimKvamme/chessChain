@@ -247,6 +247,9 @@ scale = Vector2(0.497, 0.472)
 visible = false
 position = Vector2(-136, -208.8)
 scale = Vector2(0.356, 0.504167)
+texture = null
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_vbfft")
+
+[node name="Move_window" parent="." instance=ExtResource("12_7nmnw")]
