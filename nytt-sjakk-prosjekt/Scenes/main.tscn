@@ -245,6 +245,7 @@ position = Vector2(200, -200)
 scale = Vector2(0.497, 0.472)
 
 [node name="menu" parent="." instance=ExtResource("10_appac")]
+visible = false
 position = Vector2(-136, -208.8)
 scale = Vector2(0.356, 0.504167)
 
