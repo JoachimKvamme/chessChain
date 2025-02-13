@@ -2,7 +2,7 @@ extends RichTextLabel
  
 var all_moves = [["d4","d5"],["c4","dxc4"]]
 # change variable to the one inside _ready() when things are updated
-# Might need to have it signal each time a move is made.
+# Might need to have it signal each time a move is made
 
 func _ready() -> void:
 	# var all_moves = <name of variable>.<name of source node>
