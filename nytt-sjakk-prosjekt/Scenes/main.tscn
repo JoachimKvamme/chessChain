@@ -253,3 +253,4 @@ scale = Vector2(0.356, 0.504167)
 replication_config = SubResource("SceneReplicationConfig_vbfft")
 
 [node name="Move_window" parent="." instance=ExtResource("12_7nmnw")]
+follow_viewport_enabled = true
